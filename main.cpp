@@ -9,11 +9,63 @@
  * No disclosures.
 */
 
-
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <stdlib.h>
+#include "BTree.h"
 
-int main()
+using namespace std;
+
+int main(int argc, const char *argv[])
 {
-    std::cout << "Hello, Carl!" << std::endl;
-    return 0;
+    // Gets filepath and creates ifstream object.
+    string filePath = string(argv[1]);
+    ifstream dataFile;
+    dataFile.open(filePath.c_str());
+
+    // Validates file
+    if(dataFile.good())
+    {
+        // Closes file after successfully reading data into doubly linked list.
+        dataFile.close();
+    }
+    else
+    {
+        // Closes files since something went wrong.
+        // Normally I would include a cout here but the project stated there should be no other output.
+        dataFile.close();
+    }
+
+    do
+    {
+        cout << endl << "Please enter a command..." << endl;
+        cout << "Add Key: a #" << endl;
+        cout << "Remove Key: r" << endl;
+        cout << "Quit: q" << endl << endl;
+
+        char userChoice[1];
+        cin >> userChoice;
+
+        if (userChoice[0] == 'q')
+        {
+            exit(0);
+        }
+        else if (userChoice[0] == 'r')
+        {
+            cout << "Remove" << endl;
+//            heap.remove();
+//            cout << heap << endl;
+        }
+        else
+        {
+            int key;
+            cin >> key;
+            cout << "Add" << endl;
+//            heap.add(key);
+//            cout << heap << endl;
+        }
+    }
+    while(true);
+
 }
