@@ -17,26 +17,9 @@
 
 using namespace std;
 
-int main(int argc, const char *argv[])
+template <int M>
+void userInput(BTree<M> btree)
 {
-    // Gets filepath and creates ifstream object.
-    string filePath = string(argv[1]);
-    ifstream dataFile;
-    dataFile.open(filePath.c_str());
-
-    // Validates file
-    if(dataFile.good())
-    {
-        // Closes file after successfully reading data into doubly linked list.
-        dataFile.close();
-    }
-    else
-    {
-        // Closes files since something went wrong.
-        // Normally I would include a cout here but the project stated there should be no other output.
-        dataFile.close();
-    }
-
     do
     {
         cout << endl << "Please enter a command..." << endl;
@@ -53,19 +36,122 @@ int main(int argc, const char *argv[])
         }
         else if (userChoice[0] == 'r')
         {
-            cout << "Remove" << endl;
-//            heap.remove();
-//            cout << heap << endl;
+            int key;
+            cin >> key;
+//            btree.remove(key);
+            btree.printBTree();
         }
         else
         {
             int key;
             cin >> key;
-            cout << "Add" << endl;
-//            heap.add(key);
-//            cout << heap << endl;
+            btree.insert(key);
+            btree.printBTree();
         }
     }
     while(true);
+}
 
+int main(int argc, const char *argv[])
+{
+    // Creates 7 BTrees of orders 4-10 as specified by Professor Bolton
+    BTree<4> btree4;
+    BTree<5> btree5;
+    BTree<6> btree6;
+    BTree<7> btree7;
+    BTree<8> btree8;
+    BTree<9> btree9;
+    BTree<10> btree10;
+
+
+    // Gets filepath and creates ifstream object.
+    string filePath = string(argv[1]);
+    ifstream dataFile;
+    dataFile.open(filePath.c_str());
+    int order;
+    int key;
+
+    // Validates file
+    if(dataFile.good())
+    {
+        dataFile >> order;
+        cout << endl << "order = " << order << endl;
+        switch(order)
+        {
+            case 4:
+                while(dataFile >> key)
+                {
+                    btree4.insert(key);
+                }
+                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                btree4.printBTree();
+                userInput(btree4);
+                break;
+            case 5:
+                while(dataFile >> key)
+                {
+                    btree5.insert(key);
+                }
+                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                btree5.printBTree();
+                userInput(btree5);
+                break;
+            case 6:
+                while(dataFile >> key)
+                {
+                    btree6.insert(key);
+                }
+                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                btree6.printBTree();
+                userInput(btree6);
+                break;
+            case 7:
+                while(dataFile >> key)
+                {
+                    btree7.insert(key);
+                }
+                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                btree7.printBTree();
+                userInput(btree7);
+                break;
+            case 8:
+                while(dataFile >> key)
+                {
+                    btree8.insert(key);
+                }
+                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                btree8.printBTree();
+                userInput(btree8);
+                break;
+            case 9:
+                while(dataFile >> key)
+                {
+                    btree9.insert(key);
+                }
+                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                btree9.printBTree();
+                userInput(btree9);
+                break;
+            case 10:
+                while(dataFile >> key)
+                {
+                    btree10.insert(key);
+                }
+                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                btree10.printBTree();
+                userInput(btree10);
+                break;
+            default:
+                break;
+        }
+
+        // Closes file after successfully reading data BTree.
+        dataFile.close();
+    }
+    else
+    {
+        // Closes files since something went wrong.
+        // Normally I would include a cout here but the project stated there should be no other output.
+        dataFile.close();
+    }
 }
