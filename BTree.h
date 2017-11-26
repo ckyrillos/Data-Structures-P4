@@ -1,5 +1,3 @@
-// HYBRID OF CLRS AND G4G 11:40PM 11/24
-
 /*
  * BTree.h
  *
@@ -40,7 +38,7 @@ public:
     BTreeNode* children[M];
     bool isLeaf;
 
-    // Constructor and Destructor
+    // Function to Print Node Using a Depth First Search
     void printNode() const;
 };
 // END BTreeNode Declaration
@@ -117,6 +115,7 @@ BTree<M>::~BTree()
     delete this->root;
 }
 
+
 // Prints BTree by use of printNode()
 template <int M>
 void BTree<M>::printBTree() const
@@ -125,82 +124,73 @@ void BTree<M>::printBTree() const
     cout << endl;
 }
 
+
 // Insertion Operator for BTree
 template <int M>
 void BTree<M>::insert(int key)
 {
-    // If root is full, then tree grows in height
     if (root->numKeys == M-1)
     {
-        // Allocate memory for new root
         BTreeNode<M> *newNode = new BTreeNode<M>();
         newNode->isLeaf = false;
         newNode->numKeys = 0;
         newNode->children[0] = root;
 
-        // Split the old root and move 1 key to the new root
+        // Splits old root and moves key into new root
         splitChild(newNode, newNode->children[0], 0);
 
-        // Decide which of the two children is going to have new key
+        // Decides which of the two children will get new key
         int i = 0;
         if (newNode->keys[0] < key)
         {
             i++;
         }
+
+        // Inserts key into appropriate child
         insertNonFull(newNode->children[i], key);
 
-        // Change root
+        // Updates root
         root = newNode;
     }
-    else  // If root is not full, call insertNonFull for root
+    else
     {
         insertNonFull(root, key);
     }
 }
 
 
-// A utility function to insert a new key in this node
-// The assumption is, the node must be non-full when this
-// function is called
+// Utility function to insert a new key into a now Non-Full Node
 template <int M>
 void BTree<M>::insertNonFull(BTreeNode<M>* x, int key)
 {
-    // Initialize index as index of rightmost element
+    // Creates an index i to be the index of the rightmost element
     int i = x->numKeys-1;
 
-    // If this is a leaf node
     if (x->isLeaf == true)
     {
-        // The following loop does two things
-        // a) Finds the location of new key to be inserted
-        // b) Moves all greater keys to one place ahead
+        // Finds location where new key will be added and add all greater keys ahead of it
         while (i >= 0 && x->keys[i] > key)
         {
             x->keys[i+1] = x->keys[i];
             i--;
         }
 
-        // Insert the new key at found location
+        // Inserts the new key
         x->keys[i+1] = key;
         x->numKeys = x->numKeys+1;
     }
-    else // If this node is not leaf
+    else
     {
-        // Find the child which is going to have the new key
         while (i >= 0 && x->keys[i] > key)
         {
             i--;
         }
 
-        // See if the found child is full
+        // Checks if child is full
         if (x->children[i+1]->numKeys == M-1)
         {
-            // If the child is full, then split it
             splitChild(x, x->children[i+1], i+1);
 
-            // After split, the middle key of C[i] goes up and
-            // C[i] is splitted into two.  See which of the two
-            // is going to have the new key
             if (x->keys[i+1] < key)
             {
                 i++;
@@ -210,7 +200,8 @@ void BTree<M>::insertNonFull(BTreeNode<M>* x, int key)
     }
 }
 
-// A utility function
+
+// Utility function to split child into two nodes which allows BTree to grow
 template <int M>
 void BTree<M>::splitChild(BTreeNode<M>* parent, BTreeNode<M> *child, int i)
 {
@@ -219,13 +210,13 @@ void BTree<M>::splitChild(BTreeNode<M>* parent, BTreeNode<M> *child, int i)
     newNode->isLeaf = child->isLeaf;
     newNode->numKeys = (M-1)/2;
 
-    // copy right half of keys to newNode:
+    // Copy second half of keys to new node
     for (int j = 0; j<((M-1)/2); j ++){
         newNode->keys[j] = child->keys[j + M/2];
         child->keys[j+M/2] = 0;
     }
 
-    // copy right half of children to newNode:
+    // Copy second half of children to new node
     if (!child->isLeaf) {
         for (int j = 0; j<((M+1)/2); j ++){
             newNode->children[j] = child->children[j + M/2];
@@ -234,23 +225,24 @@ void BTree<M>::splitChild(BTreeNode<M>* parent, BTreeNode<M> *child, int i)
         child->numKeys = M - (M-1)/2 -1;
     }
 
-    // make room for new child in parent.children:
+    // Create room for new child in parent->child
     for (int j = parent->numKeys + 1; j > i+1; j--){
         parent->children[j] = parent->children[j-1];
     }
-    // insert new child:
+    // Inserts the new child
     parent->children[i+1] = newNode;
 
-    // make room for new key in parent:
+    // Makes room for the new key for parent
     for (int j = parent->numKeys; j > i; j--){
         parent->keys[j] = parent->keys[j-1];
     }
-    // insert new key in parent:
+
+    // Inserts the new key in parent
     parent->keys[i] = child->keys[(M/2)-1];
     child->keys[(M/2)-1] = 0;
     child->numKeys = (M/2)-1;
     parent->numKeys++;
 }
-
 // END BTree Implementation
+
 #endif //PROJECT_4_BTREE_H

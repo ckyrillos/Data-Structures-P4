@@ -6,7 +6,8 @@
  * understand that violating this policy will result in drastic repercussions.
  *
  * Disclosures:
- * No disclosures.
+ * Referred to Introduction to Algorithms 3rd Edition by Cormen, Leiserson, Rivest, and Stein
+ *
 */
 
 #include <iostream>
@@ -74,8 +75,8 @@ int main(int argc, const char *argv[])
     // Validates file
     if(dataFile.good())
     {
+        // Reads in degree of BTree to be created.
         dataFile >> order;
-        cout << endl << "order = " << order << endl;
         switch(order)
         {
             case 4:
