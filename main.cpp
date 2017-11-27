@@ -39,7 +39,7 @@ void userInput(BTree<M> btree)
         {
             int key;
             cin >> key;
-//            btree.remove(key);
+            btree.remove(key);
             btree.printBTree();
         }
         else
@@ -84,7 +84,7 @@ int main(int argc, const char *argv[])
                 {
                     btree4.insert(key);
                 }
-                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                cout << endl << "Your " << order << " order B-tree has been initialized to: " << endl;
                 btree4.printBTree();
                 userInput(btree4);
                 break;
@@ -93,7 +93,7 @@ int main(int argc, const char *argv[])
                 {
                     btree5.insert(key);
                 }
-                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                cout << endl << "Your " << order << " order B-tree has been initialized to: " << endl;
                 btree5.printBTree();
                 userInput(btree5);
                 break;
@@ -102,7 +102,7 @@ int main(int argc, const char *argv[])
                 {
                     btree6.insert(key);
                 }
-                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                cout << endl << "Your " << order << " order B-tree has been initialized to: " << endl;
                 btree6.printBTree();
                 userInput(btree6);
                 break;
@@ -111,7 +111,7 @@ int main(int argc, const char *argv[])
                 {
                     btree7.insert(key);
                 }
-                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                cout << endl << "Your " << order << " order B-tree has been initialized to: " << endl;
                 btree7.printBTree();
                 userInput(btree7);
                 break;
@@ -120,7 +120,7 @@ int main(int argc, const char *argv[])
                 {
                     btree8.insert(key);
                 }
-                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                cout << endl << "Your " << order << " order B-tree has been initialized to: " << endl;
                 btree8.printBTree();
                 userInput(btree8);
                 break;
@@ -129,7 +129,7 @@ int main(int argc, const char *argv[])
                 {
                     btree9.insert(key);
                 }
-                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                cout << endl << "Your " << order << " order B-tree has been initialized to: " << endl;
                 btree9.printBTree();
                 userInput(btree9);
                 break;
@@ -138,7 +138,7 @@ int main(int argc, const char *argv[])
                 {
                     btree10.insert(key);
                 }
-                cout << endl << "Your " << order << " order B-tree has been initialized to: ";
+                cout << endl << "Your " << order << " order B-tree has been initialized to: " << endl;
                 btree10.printBTree();
                 userInput(btree10);
                 break;
