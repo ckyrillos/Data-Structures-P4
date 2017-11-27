@@ -21,7 +21,6 @@
 #ifndef PROJECT_4_BTREE_H
 #define PROJECT_4_BTREE_H
 
-
 #include <iostream>
 #include <sstream>
 using namespace std;
@@ -206,7 +205,6 @@ void BTree<M>::insertNonFull(BTreeNode<M>* nonFullNode, int key)
 template <int M>
 void BTree<M>::splitChild(BTreeNode<M>* parent, BTreeNode<M> *child, int i)
 {
-
     BTreeNode<M>* newNode = new BTreeNode<M>();
     newNode->isLeaf = child->isLeaf;
     newNode->numKeys = (M-1)/2;
@@ -269,16 +267,19 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
     }
 
     // Case 1: Key is in thisNode and thisNode is a leaf node
-    if (thisNode->keys[i] == key && thisNode->isLeaf)
+    if (thisNode->isLeaf)
     {
-        cout << endl << "CASE 1" << endl;
-        while (i <= thisNode->numKeys-2)
+        // If key is found, begin execution. If key is not in tree, do nothing.
+        if(thisNode->keys[i] == key)
         {
-            thisNode->keys[i] = thisNode->keys[i+1];
-            i++;
+            while (i <= thisNode->numKeys-2)
+            {
+                thisNode->keys[i] = thisNode->keys[i+1];
+                i++;
+            }
+            thisNode->keys[i] = 0;
+            thisNode->numKeys--;
         }
-        thisNode->keys[i] = 0;
-        thisNode->numKeys--;
     }
 
     // Case 2: Key is in thisNode and thisNode is internal
@@ -287,25 +288,31 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
         // Subcase 2A: The child before the key has extra keys
         if(thisNode->children[i]->numKeys > ((M/2)-1))
         {
-            cout << endl << "CASE 2A" << endl;
             BTreeNode<M>* child1 = thisNode->children[i];
+            while (child1->isLeaf == false)
+            {
+                child1 = child1->children[child1->numKeys];
+            }
+
             thisNode->keys[i] = child1->keys[child1->numKeys-1];
-            removeKeyFromNode(child1, child1->keys[child1->numKeys-1]);
+            removeKeyFromNode(thisNode->children[i], child1->keys[child1->numKeys-1]);
         }
 
         // Subcase 2B:The child before the key has no extra keys but the child after it does
         else if ((i+1) <= thisNode->numKeys && thisNode->children[i+1]->numKeys > ((M/2)-1))
         {
-            cout << endl << "CASE 2B" << endl;
             BTreeNode<M>* child2 = thisNode->children[i+1];
+            while (child2->isLeaf == false)
+            {
+                child2 = child2->children[0];
+            }
             thisNode->keys[i] = child2->keys[0];
-            removeKeyFromNode(child2, child2->keys[0]);
+            removeKeyFromNode(thisNode->children[i+1], child2->keys[0]);
         }
 
         // Subcase 2C: Neither the child before the key nor the child after it have extra keys
         else
         {
-            cout << endl << "CASE 2C" << endl;
             BTreeNode<M>* child1 = thisNode->children[i];
             BTreeNode<M>* child2 = thisNode->children[i+1];
 
@@ -326,13 +333,11 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
             }
 
             // Deletes key and child2's pointer from child 1, and then moves everything over
-            for (int j = i; j<thisNode->numKeys; j++)
+            for (int j = i; j < thisNode->numKeys; j++)
             {
                 thisNode->keys[j] = thisNode->keys[j+1];
                 thisNode->children[j+1] = thisNode->children[j+2];
             }
-            thisNode->keys[thisNode->numKeys] = 0;
-            thisNode->children[thisNode->numKeys] = 0;
             thisNode->numKeys--;
 
             // Checks if thisNode is the root and if so deletes it
@@ -355,12 +360,11 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
             // Subcase 3A: Either the left child or right child has extra keys
             if ((i-1) >= 0 && thisNode->children[i-1]->numKeys > ((M/2)-1))
             {
-                cout << endl << "CASE 3ALeft" << endl;
                 // Left child has extra keys
                 BTreeNode<M>* leftChild = thisNode->children[i-1];
 
                 // Makes space in child for a new key
-                for (int j = child->numKeys; j>0; j--)
+                for (int j = child->numKeys; j > 0; j--)
                 {
                     child->keys[j] = child->keys[j-1];
                     child->children[j+1] = child->children[j];
@@ -377,13 +381,12 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
                 // Brings a key from leftNode into thisNode and fixes leftNode since it lost a key
                 thisNode->keys[i-1] = leftChild->keys[leftChild->numKeys-1];
                 leftChild->keys[leftChild->numKeys-1] = 0;
-                leftChild->children[leftChild->numKeys] = NULL; //TODO: S should be 0?
+                leftChild->children[leftChild->numKeys] = 0;
                 leftChild->numKeys--;
 
             }
             else if ((i+1) <= thisNode->numKeys && thisNode->children[i+1]->numKeys > ((M/2)-1))
             {
-                cout << endl << "CASE 3ARight" << endl;
                 // Right child has extra keys
                 BTreeNode<M>* rightChild = thisNode->children[i+1];
 
@@ -400,22 +403,21 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
                 for (int j = 0; j < rightChild->numKeys; j++)
                 {
                     rightChild->keys[j] = rightChild->keys[j+1];
-                    rightChild->children[j] = rightChild->children[j + 1];
+                    rightChild->children[j] = rightChild->children[j+1];
                 }
                 rightChild->keys[rightChild->numKeys] = 0;
                 rightChild->children[rightChild->numKeys] = rightChild->children[rightChild->numKeys+1];
-                rightChild->children[rightChild->numKeys+1] = NULL; //TODO: S should be 0?
+                rightChild->children[rightChild->numKeys+1] = 0;
             }
 
             // Subcase 3B: Neither left child nor right child has extra keys
             else
             {
-                cout << endl << "CASE 3B" << endl;
-                BTreeNode<M>* leftChild = NULL; //TODO: S should be 0?
-                BTreeNode<M>* rightChild = NULL; //TODO: S should be 0?
+                BTreeNode<M>* leftChild = 0;
+                BTreeNode<M>* rightChild = 0;
 
                 // Determines if child and siblings are left or right from each other and adjusts accordingly
-                if (i+1 > thisNode->numKeys)
+                if ((i+1) > thisNode->numKeys)
                 {
                     rightChild = child;
                     leftChild = thisNode->children[i-1];
@@ -445,7 +447,7 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
                     thisNode->children[j+1] = thisNode->children[j+2];
                 }
                 thisNode->numKeys--;
-                thisNode->children[thisNode->numKeys+1] = NULL; //TODO: S should be 0?
+                thisNode->children[thisNode->numKeys+1] = 0;
                 child = leftChild;
 
                 // Checks if thisNode is the root and if so deletes it
