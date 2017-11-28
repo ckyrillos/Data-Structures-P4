@@ -7,6 +7,7 @@
  *
  * Disclosures:
  * Referred to Introduction to Algorithms 3rd Edition by Cormen, Leiserson, Rivest, and Stein
+ * Referred to Professor Bolton's Lecture Slides
  *
 */
 
@@ -18,9 +19,11 @@
 
 using namespace std;
 
+// Function to take in user input and operate accordingly on the BTree passed through as an argument
 template <int M>
 void userInput(BTree<M> btree)
 {
+    // Executes repeatedly until user quits program
     do
     {
         cout << endl << "Please enter a command..." << endl;
@@ -31,10 +34,13 @@ void userInput(BTree<M> btree)
         char userChoice[1];
         cin >> userChoice;
 
+        // Terminates program
         if (userChoice[0] == 'q')
         {
             exit(0);
         }
+
+        // Removes a key specified by user
         else if (userChoice[0] == 'r')
         {
             int key;
@@ -42,6 +48,8 @@ void userInput(BTree<M> btree)
             btree.remove(key);
             btree.printBTree();
         }
+
+        // Else, means that a user is trying to add a specific key
         else
         {
             int key;
@@ -77,6 +85,8 @@ int main(int argc, const char *argv[])
     {
         // Reads in degree of BTree to be created.
         dataFile >> order;
+
+        // Populates the appropriate tree based on degree and then calls userInput to prompt user to operate on tree
         switch(order)
         {
             case 4:

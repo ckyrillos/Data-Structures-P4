@@ -49,7 +49,6 @@ template <int M>
 void BTreeNode<M>::printNode() const
 {
     cout << "[";
-
     for (int i = 0; i < this->numKeys; i++)
     {
         cout << this->keys[i];
@@ -58,7 +57,7 @@ void BTreeNode<M>::printNode() const
             cout << ",";
         }
     }
-    if (!this->isLeaf)
+    if (this->isLeaf == false)
     {
         for (int i = 0; i <= this->numKeys; i++)
         {
@@ -137,7 +136,7 @@ void BTree<M>::insert(int key)
         newNode->children[0] = root;
 
         // Splits old root and moves key into new root
-        splitChild(newNode, newNode->children[0], 0);
+        this->splitChild(newNode, newNode->children[0], 0);
 
         // Decides which of the two children will get new key
         int i = 0;
@@ -147,7 +146,7 @@ void BTree<M>::insert(int key)
         }
 
         // Inserts key into appropriate child
-        insertNonFull(newNode->children[i], key);
+        this->insertNonFull(newNode->children[i], key);
 
         // Updates root
         root = newNode;
@@ -189,7 +188,7 @@ void BTree<M>::insertNonFull(BTreeNode<M>* nonFullNode, int key)
         // Checks if child is full
         if (nonFullNode->children[i+1]->numKeys == (M-1))
         {
-            splitChild(nonFullNode, nonFullNode->children[i+1], (i+1));
+            this->splitChild(nonFullNode, nonFullNode->children[i+1], (i+1));
 
             if (nonFullNode->keys[i+1] < key)
             {
@@ -232,6 +231,7 @@ void BTree<M>::splitChild(BTreeNode<M>* parent, BTreeNode<M> *child, int i)
     {
         parent->children[j] = parent->children[j-1];
     }
+
     // Inserts the new child
     parent->children[i+1] = newNode;
 
@@ -248,7 +248,7 @@ void BTree<M>::splitChild(BTreeNode<M>* parent, BTreeNode<M> *child, int i)
     parent->numKeys++;
 }
 
-
+// Remove Operator for BTree
 template <int M>
 void BTree<M>::remove(int key)
 {
@@ -256,7 +256,7 @@ void BTree<M>::remove(int key)
 }
 
 
-// Remove Operator for BTree
+// Utility function which actually does the removal
 template <int M>
 void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
 {
@@ -316,6 +316,13 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
             BTreeNode<M>* child1 = thisNode->children[i];
             BTreeNode<M>* child2 = thisNode->children[i+1];
 
+            // Checks if thisNode is the root and only has one key because if so it will need to be deleted at end
+            bool isRootOne = false;
+            if (thisNode == root && thisNode->numKeys == 1)
+            {
+                isRootOne = true;
+            }
+
             // Puts key in child1
             child1->keys[child1->numKeys] = key;
             child1->numKeys++;
@@ -340,8 +347,8 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
             }
             thisNode->numKeys--;
 
-            // Checks if thisNode is the root and if so deletes it
-            if (thisNode == root && thisNode->numKeys==1)
+            // Reassigns root since thisNode was determined to be the root and only have one key at beginning
+            if (isRootOne)
             {
                 root = child1;
             }
@@ -416,6 +423,13 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
                 BTreeNode<M>* leftChild = 0;
                 BTreeNode<M>* rightChild = 0;
 
+                // Checks if thisNode is the root and only has one key because if so it will need to be deleted at end
+                bool isRootOne = false;
+                if (thisNode == root && thisNode->numKeys == 1)
+                {
+                    isRootOne = true;
+                }
+
                 // Determines if child and siblings are left or right from each other and adjusts accordingly
                 if ((i+1) > thisNode->numKeys)
                 {
@@ -450,8 +464,8 @@ void BTree<M>::removeKeyFromNode(BTreeNode<M> * thisNode, int key)
                 thisNode->children[thisNode->numKeys+1] = 0;
                 child = leftChild;
 
-                // Checks if thisNode is the root and if so deletes it
-                if (thisNode == root && thisNode->numKeys==1)
+                // Reassigns root since thisNode was determined to be the root and only have one key at beginning
+                if(isRootOne)
                 {
                     root = child;
                 }
